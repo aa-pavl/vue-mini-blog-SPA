@@ -48,9 +48,9 @@ import MainView from './views/MainView.vue';
     <router-link to="/post">post</router-link>
   </header>
 
-    <section class="container">
+    <div class="container">
       <RouterView />
-    </section>
+    </div>
 
 </template>
 

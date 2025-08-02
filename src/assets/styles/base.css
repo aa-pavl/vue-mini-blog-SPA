@@ -47,3 +47,17 @@ body {
   padding: 15px;
   min-width: 250px;
 }
+
+
+.line-h {
+  width: auto;
+  height: 2px;
+  background-color: var(--color-border);
+}
+
+.line-v {
+  width: 2px;
+  height: auto;
+  background-color: var(--color-border);
+}
+

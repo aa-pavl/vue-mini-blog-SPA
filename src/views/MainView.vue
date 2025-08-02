@@ -75,9 +75,8 @@ let userName = "Paris Washington";
 </script>
 
 <template>
-
-  <div class="main-view">
-
+  <section class="main-view">
+    
     <div class="block">
       <div class="title-1">Авторы</div>
       <div class="block-avtors">
@@ -85,7 +84,7 @@ let userName = "Paris Washington";
       </div>
     </div>
 
-    <div class="block-line"></div>
+    <div class="line-v"></div>
 
     <div class="block">
       <div class="title-1">Посты</div>
@@ -94,8 +93,7 @@ let userName = "Paris Washington";
       </div>
     </div>
 
-  </div>
-
+  </section>
 </template>
 
 <style scoped>

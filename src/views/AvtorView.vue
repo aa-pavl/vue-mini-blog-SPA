@@ -74,7 +74,7 @@ const avtor: UserInfoType = {
 </script>
 
 <template>
-  <div class="avtor-view">
+  <section class="avtor-view">
 
     <div class="avtor-header">
         <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image">
@@ -100,8 +100,7 @@ const avtor: UserInfoType = {
       </div>
     </div>
 
-  </div>
-
+  </section>
 </template>
 
 <style>

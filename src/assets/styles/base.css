@@ -1,0 +1,72 @@
+:root {
+  --vt-c-text-dark: #121416; 
+  --vt-c-text-light: #6C757D; 
+
+  --vt-c-border: #D9D9D9;
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: white;
+
+  --color-border: var(--vt-c-border);
+  /* --color-border-hover: var(--vt-c-divider-light-1); */
+
+  /* --color-heading: var(--vt-c-text-light-1); */
+  --color-text-dark: var(--vt-c-text-dark);
+  --color-text-light: var(--vt-c-text-light);
+
+  --section-gap: 40px;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--vt-c-black);
+    --color-background-soft: var(--vt-c-black-soft);
+    --color-background-mute: var(--vt-c-black-mute);
+
+    --color-border: var(--vt-c-divider-dark-2);
+    --color-border-hover: var(--vt-c-divider-dark-1);
+
+    --color-heading: var(--vt-c-text-dark-1);
+    --color-text: var(--vt-c-text-dark-2);
+  }
+} */
+
+/* *,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+} */
+
+body {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: 400;
+  font-size: 16px;
+
+  /* transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}

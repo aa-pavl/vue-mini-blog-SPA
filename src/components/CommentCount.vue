@@ -6,8 +6,8 @@ const props = defineProps(['count']);
 
 <template>
 
-  <div class="comment">
-    <div class="comment-count">{{ props.count }}</div>
+  <div class="comment-count">
+    <div class="count">{{ props.count }}</div>
     <div>
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -24,7 +24,7 @@ const props = defineProps(['count']);
 @import "@/assets/styles/base.css";
 @import "@/assets/styles/_fonts.css";
 
-.comment {
+.comment-count {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,7 +32,7 @@ const props = defineProps(['count']);
   color: var(--color-text-light);
 
 
-  .comment-count {
+  .count {
     font-weight: 600;
   }
 

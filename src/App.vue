@@ -43,6 +43,9 @@ import MainView from './views/MainView.vue';
           fill="white" />
       </svg>
     </router-link>
+    
+    <router-link to="/avtor">avtor</router-link>
+    <router-link to="/post">post</router-link>
   </header>
 
     <section class="container">

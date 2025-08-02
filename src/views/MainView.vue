@@ -79,7 +79,7 @@ let userName = "Paris Washington";
   <div class="main-view">
 
     <div class="block">
-      <div class="block-subtitle">Авторы</div>
+      <div class="title-1">Авторы</div>
       <div class="block-avtors">
         <AvtorMini v-for="avtor in avtors" :user-name="avtor" />
       </div>
@@ -88,7 +88,7 @@ let userName = "Paris Washington";
     <div class="block-line"></div>
 
     <div class="block">
-      <div class="block-subtitle">Посты</div>
+      <div class="title-1">Посты</div>
       <div class="block-posts">
         <PostMini v-for="post in posts" :is-light="false" :post="post" :user-name="userName" />
       </div>
@@ -110,9 +110,7 @@ let userName = "Paris Washington";
     background-color: var(--color-border);
   }
 
-  .block-subtitle {
-    font-size: 48px;
-    font-weight: 700;
+  .title-1 {
     margin-bottom: 30px;
   }
 

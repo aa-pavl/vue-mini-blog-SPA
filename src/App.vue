@@ -48,9 +48,7 @@ import MainView from './views/MainView.vue';
     <router-link to="/post">post</router-link>
   </header>
 
-    <div class="container">
-      <RouterView />
-    </div>
+  <RouterView />
 
 </template>
 
@@ -61,10 +59,5 @@ import MainView from './views/MainView.vue';
 .header {
   background-color: var(--color-green-dark);
   text-align: center;
-}
-
-.container {
-  max-width: 1240px;
-  margin: 60px auto;
 }
 </style>

@@ -75,25 +75,29 @@ let userName = "Paris Washington";
 </script>
 
 <template>
-  <section class="main-view">
-    
-    <div class="block">
-      <div class="title-1">Авторы</div>
-      <div class="block-avtors">
-        <AvtorMini v-for="avtor in avtors" :user-name="avtor" />
+  <div class="container">
+
+    <section class="main-view">
+      
+      <div class="block">
+        <div class="title-1">Авторы</div>
+        <div class="block-avtors">
+          <AvtorMini v-for="avtor in avtors" :user-name="avtor" />
+        </div>
       </div>
-    </div>
 
-    <div class="line-v"></div>
+      <div class="line-v"></div>
 
-    <div class="block">
-      <div class="title-1">Посты</div>
-      <div class="block-posts">
-        <PostMini v-for="post in posts" :is-light="false" :post="post" :user-name="userName" />
+      <div class="block">
+        <div class="title-1">Посты</div>
+        <div class="block-posts">
+          <PostMini v-for="post in posts" :is-light="false" :post="post" :user-name="userName" />
+        </div>
       </div>
-    </div>
 
-  </section>
+    </section>
+
+  </div>
 </template>
 
 <style scoped>

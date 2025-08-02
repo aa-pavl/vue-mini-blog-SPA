@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CommentCount from '@/components/CommentCount.vue';
+import PostFooter from '@/components/PostFooter.vue';
 import PostMini from '@/components/PostMini.vue';
 import type { PostType } from '@/types/post.type';
 import type { UserInfoType } from '@/types/user-info.type';
@@ -98,17 +99,7 @@ const avtor: UserInfoType = {
 
       <div class="post-view-description">{{ posts[0].fullDescription }}</div>
 
-      <div class="post-info">
-        <div class="post-info-left">
-          <img src="@/assets/images/user_1.png" alt="user-photo" class="post-info-image">
-          <div class="post-info-content">
-            <div class="post-info-user-name">{{ avtor.fullName }}</div>
-            <div class="post-info-date-time">{{ posts[0].dateTime }}</div>
-          </div>
-        </div>
-
-        <CommentCount :count="13" />
-      </div>
+      <PostFooter :is-light="false" :post="posts[0]" :user-name="avtor.fullName" />
     </section>
 
     <div class="line-h"></div>
@@ -137,7 +128,7 @@ const avtor: UserInfoType = {
         </div>
 
         <div class="posts-more-list">
-          <PostMini v-for="post in avtor.post" :is-light="true" :post="post" :user-name="avtor.fullName" />
+          <PostMini v-for="post in avtor.post" :is-light="false" :post="post" :user-name="avtor.fullName" />
         </div>
     </section>
   </div>

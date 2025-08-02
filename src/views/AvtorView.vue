@@ -74,33 +74,37 @@ const avtor: UserInfoType = {
 </script>
 
 <template>
-  <section class="avtor-view">
+  <div class="container">
 
-    <div class="avtor-header">
-        <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image">
+    <section class="avtor-view">
 
-        <div class="avtor-info">
-            <div class="title-1 avtor-full-name">{{ avtor.fullName }}</div>
-            <div class="title-2 avtor-blog-name">{{ avtor.blogName }}</div>
+      <div class="avtor-header">
+          <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image">
 
-            <div class="avtor-action">
-              <div class="btn btn-add">Добавить запись</div>
-            </div>
+          <div class="avtor-info">
+              <div class="title-1 avtor-full-name">{{ avtor.fullName }}</div>
+              <div class="title-2 avtor-blog-name">{{ avtor.blogName }}</div>
+
+              <div class="avtor-action">
+                <div class="btn btn-add">Добавить запись</div>
+              </div>
+          </div>
+      </div>
+      
+      <div class="avtor-posts">
+        <div class="post-header">
+          <div class="title-2">Статей автора: {{ avtor.post.length }}</div>
+          <div class="btn-sort">Сортировать</div>
         </div>
-    </div>
-    
-    <div class="avtor-posts">
-      <div class="post-header">
-        <div class="title-2">Статей автора: {{ avtor.post.length }}</div>
-        <div class="btn-sort">Сортировать</div>
+
+        <div class="posts">
+          <PostMini v-for="post in avtor.post" :is-light="true" :post="post" :user-name="avtor.fullName" />
+        </div>
       </div>
 
-      <div class="posts">
-        <PostMini v-for="post in avtor.post" :is-light="true" :post="post" :user-name="avtor.fullName" />
-      </div>
-    </div>
-
-  </section>
+    </section>
+  
+  </div>
 </template>
 
 <style>

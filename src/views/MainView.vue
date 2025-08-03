@@ -2,17 +2,18 @@
 
 import AvtorMini from "@/components/AvtorMini.vue";
 import PostMini from "@/components/PostMini.vue"
-import type { PostType } from '@/types/post.type';
+import type { PostType, PostWithAvtorType } from '@/types/post.type';
 
 import { inject, onMounted, ref } from "vue";
 import { AuthService }  from "@/services/auth.servive";
 import type { UserInfoService } from "@/services/user-info.service";
 import type { SaveUserInfoDtoType, UserInfoType } from "@/types/user-info.type";
+import router from "@/router";
 
 
-let userService = inject('UserInfoService') as UserInfoService;
-let dataList = ref<UserInfoType[]>([]);
-let postList = ref<(PostType& { avtor: string })[]>([]);
+const userService = inject('UserInfoService') as UserInfoService;
+const dataList = ref<UserInfoType[]>([]);
+const postList = ref<PostWithAvtorType[]>([]);
 
 onMounted(async () => {
   const authService = inject('AuthService') as AuthService;
@@ -24,14 +25,18 @@ onMounted(async () => {
 
 
 async function getDataList(): Promise<void> {
-  dataList.value = await userService.getData();
+  await userService.requestData();
+  dataList.value = userService.getData();
 }
 
 function getPostList(): void {
-  postList.value = dataList.value.flatMap(user => 
-    user.post.map(post => ({...post, avtor: user.fullName }))
+  const res = dataList.value.flatMap(avtor => 
+    avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
   );
-  console.log('Посты:', postList.value);
+  if (res) {
+    postList.value = res;
+    console.log('Посты:', postList.value);
+  }
 }
 
 async function addAvtor(): Promise<void> {
@@ -45,6 +50,10 @@ async function addAvtor(): Promise<void> {
   }
 }
 
+function openPageAvtor(id: number): void {
+    router.push(`/avtor/${id}`)
+}
+
 </script>
 
 <template>
@@ -56,7 +65,7 @@ async function addAvtor(): Promise<void> {
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
           <div class="btn btn-add" @click="addAvtor">Добавить автора</div>
-            <AvtorMini v-for="avtor in dataList" :user-name="avtor.fullName" />
+            <AvtorMini v-for="avtor in dataList" :user-name="avtor.fullName" @click="openPageAvtor(avtor.id)"/>
         </div>
       </div>
 

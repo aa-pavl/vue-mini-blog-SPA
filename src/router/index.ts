@@ -10,14 +10,16 @@ const router = createRouter({
       component: MainView,
     },
     {
-      path: '/avtor',
+      path: '/avtor/:id',
       name: 'avtor',
       component: () => import('../views/AvtorView.vue'),
+      props: true 
     },
     {
-      path: '/post',
+      path: '/post/:id',
       name: 'post',
       component: () => import('../views/PostView.vue'),
+      props: true 
     },
   ],
 })

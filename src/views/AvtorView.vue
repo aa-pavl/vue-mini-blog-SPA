@@ -1,75 +1,45 @@
 <script setup lang="ts">
+import IconEdit from '@/components/icons/IconEdit.vue';
 import PostMini from '@/components/PostMini.vue';
-import type { PostType } from '@/types/post.type';
+import type { UserInfoService } from '@/services/user-info.service';
+import type { PostType, PostWithAvtorType } from '@/types/post.type';
 import type { UserInfoType } from '@/types/user-info.type';
+import { inject, onMounted, ref } from 'vue';
 
+const props = defineProps<{
+  id: string; 
+}>();
 
-let posts: PostType[] = [
-  {
-    id: 1,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 2,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 3,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 4,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-];
+const avtor = ref<UserInfoType>();
+const dataList = ref<UserInfoType[]>([]);
+const postList = ref<PostWithAvtorType[]>([]);
+const userService = inject('UserInfoService') as UserInfoService;
 
+onMounted(async () => {
+  const dataList: UserInfoType[] = userService.getData();
+  const res: UserInfoType | undefined = dataList.find(item => item.id === Number(props.id));
+  
+  if (res) {
+    avtor.value = res;
+  } else {
+    console.log(`Автор с ID ${props.id} не найден`);
+  }
+});
 
-const avtor: UserInfoType = {  
-  id: 1,
-  fullName: "Paris Washington",
-  blogName: "string",
-  post: posts
-};
+async function getDataList(): Promise<void> {
+  await userService.requestData();
+  dataList.value = userService.getData();
+}
+
+function getPostList(): void {
+  const res =  dataList.value.flatMap(avtor => 
+    avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
+  );
+  if (res) {
+    postList.value = res;
+    console.log('Посты:', postList.value);
+  }
+}
 
 </script>
 
@@ -82,10 +52,11 @@ const avtor: UserInfoType = {
           <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image">
 
           <div class="avtor-info">
-              <div class="title-1 avtor-full-name">{{ avtor.fullName }}</div>
-              <div class="title-2 avtor-blog-name">{{ avtor.blogName }}</div>
+              <div class="title-1 avtor-full-name">{{ avtor?.fullName }}</div>
+              <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
 
               <div class="avtor-action">
+                <div class="btn-edit"><IconEdit /></div>
                 <div class="btn btn-add">Добавить запись</div>
               </div>
           </div>
@@ -93,12 +64,12 @@ const avtor: UserInfoType = {
       
       <div class="avtor-posts">
         <div class="post-header">
-          <div class="title-2">Статей автора: {{ avtor.post.length }}</div>
+          <div class="title-2">Статей автора: {{ avtor?.post.length }}</div>
           <div class="btn-sort">Сортировать</div>
         </div>
 
         <div class="posts">
-          <PostMini v-for="post in avtor.post" :is-light="true" :post="post" :user-name="avtor.fullName" />
+          <PostMini v-for="post in avtor?.post" :is-light="true" :post="post" :user-name="avtor?.fullName" />
         </div>
       </div>
 
@@ -135,7 +106,9 @@ const avtor: UserInfoType = {
 
       .avtor-action {
         display: flex;
+        align-items: center;
         justify-content: end;
+        gap: 30px;
       }
 
     }

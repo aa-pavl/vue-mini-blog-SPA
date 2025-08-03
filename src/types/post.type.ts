@@ -9,6 +9,13 @@ export type PostType = {
   title: string;
 };
 
+export type PostWithAvtorType = PostType & {
+  avtor: {
+    fullName: string;
+    id: number; 
+  };
+};
+
 export type GetPostDtoType = {
   briefDescription: string;
   comments: CommentType[];

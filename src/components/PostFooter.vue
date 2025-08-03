@@ -1,8 +1,13 @@
 <script setup lang="ts">
 
 import CommentCount from "@/components/CommentCount.vue"
+import type { PostWithAvtorType } from "@/types/post.type";
 
-const props  = defineProps(['isLight', 'post']);
+const props = defineProps<{
+  isLight: boolean;
+  post: PostWithAvtorType
+}>();
+// const props  = defineProps(['isLight', 'post']);
 
 </script>
 
@@ -12,7 +17,7 @@ const props  = defineProps(['isLight', 'post']);
       <div class="post-info-left">
         <img src="@/assets/images/user_1.png" alt="user-photo" v-if="!props.isLight" class="post-info-image">
         <div class="post-info-content">
-          <div class="post-info-user-name" v-if="!props.isLight">{{ props.post.avtor }}</div>
+          <div class="post-info-user-name" v-if="!props.isLight">{{ props.post.avtor.fullName }}</div>
           <div class="post-info-date-time">{{ props.post.dateTime }}</div>
         </div>
       </div>

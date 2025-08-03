@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 export class UserInfoService {
   private http: AxiosInstance;
+  dataList = ref<UserInfoType[]>([]);
 
   constructor() {
     this.http = axios.create({
@@ -29,15 +30,14 @@ export class UserInfoService {
     return response.data;
   }
 
-  async getData(): Promise<UserInfoType[]> {
-    let data = ref<UserInfoType[]>([]);
+  async requestData(): Promise<UserInfoType[]> {
     try {
-      data.value = await this.getUserInfoAll();
-      console.log('Все данные:', data.value);
+      this.dataList.value = await this.getUserInfoAll();
+      console.log('Все данные:', this.dataList.value);
     } catch (error) {
       console.error('Не удалось загрузить все данные', error);
     }
-    return data.value;
+    return this.dataList.value;
   }
 
   async add(params: SaveUserInfoDtoType): Promise<boolean> {
@@ -64,7 +64,10 @@ export class UserInfoService {
       return false;
     }
   }
-
+  
+  getData(): UserInfoType[] {
+    return this.dataList.value;
+  }
 
 }
 

@@ -25,6 +25,8 @@ const props = defineProps(['userName']);
   border: 1px solid var(--color-border);
   border-radius: 5px;
 
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   gap: 15px;

@@ -1,9 +1,8 @@
-import type { CommentType, SaveCommentDtoType } from '@/types/comment.type';
+import type { AuthType } from '@/types/auth.type';
 import axios, { type AxiosInstance } from 'axios';
 
 
-export class CommentService {
-
+export class AuthService {
   private http: AxiosInstance;
   
   public defaultUsername: string = "Tchaikovsky";
@@ -13,19 +12,40 @@ export class CommentService {
 
   constructor() {
     this.http = axios.create({
-    //   baseURL: import.meta.env.VITE_API_URL,
       headers: {
         'Content-Type': 'application/json'
       }
     });
   }
 
-  async login(username: string, password: string): Promise<any> {
-    const response = await this.http.post<any>('/login?username=' + username + '&password=' + password);
+  private async auth(username: string, password: string): Promise<AuthType> {
+    const response = await this.http.post<AuthType>(`/auth/login?username=${username}&password=${password}`);
     return response.data;
   }
 
-  public getIsLoggedIn() {
+
+  async login(username: string, password: string): Promise<void> {
+    console.log("Запрос на авторизацию...");
+    try {
+      const loginData = this.auth(username, password);
+      console.log('Вы успешно вошли!', loginData);
+      this.isLogged = true;
+    } catch (error) {
+      console.error('Не удалось войти:', error);
+      this.isLogged = false;
+    }
+  }
+
+  logout(): void {
+    console.log('Вы успешно вышли!', );
+    this.isLogged = false;
+  }
+
+  setIsLogged(isLoggedNew: boolean): void {
+    this.isLogged = isLoggedNew;
+  }
+
+  getIsLogged(): boolean {
     return this.isLogged;
   }
 }

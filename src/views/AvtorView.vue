@@ -16,11 +16,12 @@ const postList = ref<PostWithAvtorType[]>([]);
 const userService = inject('UserInfoService') as UserInfoService;
 
 onMounted(async () => {
-  const dataList: UserInfoType[] = userService.getData();
-  const res: UserInfoType | undefined = dataList.find(item => item.id === Number(props.id));
-  
+  await getDataList();
+
+  const res: UserInfoType | undefined = dataList.value.find(item => item.id === Number(props.id));
   if (res) {
     avtor.value = res;
+    getPostList();
   } else {
     console.log(`Автор с ID ${props.id} не найден`);
   }
@@ -32,7 +33,11 @@ async function getDataList(): Promise<void> {
 }
 
 function getPostList(): void {
-  const res =  dataList.value.flatMap(avtor => 
+  // const res =  dataList.value.aflatMap(avtor => 
+  //   avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
+  // );
+  const res =  dataList.value.find(item => item.id == avtor.id);
+  map(avtor => 
     avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
   );
   if (res) {

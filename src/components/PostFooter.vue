@@ -7,7 +7,6 @@ const props = defineProps<{
   isLight: boolean;
   post: PostWithAvtorType
 }>();
-// const props  = defineProps(['isLight', 'post']);
 
 </script>
 

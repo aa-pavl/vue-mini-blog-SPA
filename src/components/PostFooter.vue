@@ -2,7 +2,7 @@
 
 import CommentCount from "@/components/CommentCount.vue"
 
-const props  = defineProps(['isLight', 'post', 'userName']);
+const props  = defineProps(['isLight', 'post']);
 
 </script>
 
@@ -12,7 +12,7 @@ const props  = defineProps(['isLight', 'post', 'userName']);
       <div class="post-info-left">
         <img src="@/assets/images/user_1.png" alt="user-photo" v-if="!props.isLight" class="post-info-image">
         <div class="post-info-content">
-          <div class="post-info-user-name" v-if="!props.isLight">{{ props.userName }}</div>
+          <div class="post-info-user-name" v-if="!props.isLight">{{ props.post.avtor }}</div>
           <div class="post-info-date-time">{{ props.post.dateTime }}</div>
         </div>
       </div>

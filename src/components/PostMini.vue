@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
-import CommentCount from "@/components/CommentCount.vue"
 import PostFooter from "./PostFooter.vue";
 
-const props  = defineProps(['isLight', 'post', 'userName']);
+const props  = defineProps(['isLight', 'post']);
 
 </script>
 
@@ -13,7 +12,7 @@ const props  = defineProps(['isLight', 'post', 'userName']);
     <div class="post-title">{{ props.post.title }}</div>
     <div class="post-descriprion">{{ props.post.briefDescription }}</div>
     
-    <PostFooter :is-light="props.isLight" :post="props.post" :user-name="props.userName" />
+    <PostFooter :is-light="props.isLight" :post="props.post" />
 
   </div>
 </template>

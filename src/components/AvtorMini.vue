@@ -32,12 +32,12 @@ const props = defineProps(['userName']);
   background-color: var(--color-green-light);
 
   .avtor-image {
-    width: 64px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
   }
 
   .avtor-user-name {
-    font-size: 24px;
+    font-size: 18px;
   }
 
 }

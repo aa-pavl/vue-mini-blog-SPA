@@ -4,73 +4,46 @@ import AvtorMini from "@/components/AvtorMini.vue";
 import PostMini from "@/components/PostMini.vue"
 import type { PostType } from '@/types/post.type';
 
+import { inject, onMounted, ref } from "vue";
+import { AuthService }  from "@/services/auth.servive";
+import type { UserInfoService } from "@/services/user-info.service";
+import type { SaveUserInfoDtoType, UserInfoType } from "@/types/user-info.type";
 
-let posts: PostType[] = [
-  {
-    id: 1,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 2,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 3,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-  {
-    id: 4,
-    title: "Заголовок",
-    briefDescription: "Краткое описание",
-    fullDescription: "Полное описание",
-    dateTime: '17 сентября 2024',
-    comments: [{
-      dateTime: "string",
-      email: "string",
-      id: 1,
-      textComment: "string",
-      userInfo: "string",
-    }],
-  },
-];
 
-let avtors: string[] = [
-  "Paris Washington",
-  "Lala Lo",
-  "Vini Pux",
-]
+let userService = inject('UserInfoService') as UserInfoService;
+let dataList = ref<UserInfoType[]>([]);
+let postList = ref<(PostType& { avtor: string })[]>([]);
 
-let userName = "Paris Washington";
+onMounted(async () => {
+  const authService = inject('AuthService') as AuthService;
+  authService.login(authService.defaultUsername, authService.defaultPassword);
+
+  await getDataList();
+  getPostList();
+});
+
+
+async function getDataList(): Promise<void> {
+  dataList.value = await userService.getData();
+}
+
+function getPostList(): void {
+  postList.value = dataList.value.flatMap(user => 
+    user.post.map(post => ({...post, avtor: user.fullName }))
+  );
+  console.log('Посты:', postList.value);
+}
+
+async function addAvtor(): Promise<void> {
+  const params: SaveUserInfoDtoType = {
+    "fullName":"Test Add1", 
+    "blogName": "Test blog1"
+  };
+
+  if (await userService.add(params)) {
+    await getDataList();
+  }
+}
 
 </script>
 
@@ -82,7 +55,8 @@ let userName = "Paris Washington";
       <div class="block">
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
-          <AvtorMini v-for="avtor in avtors" :user-name="avtor" />
+          <div class="btn btn-add" @click="addAvtor">Добавить автора</div>
+            <AvtorMini v-for="avtor in dataList" :user-name="avtor.fullName" />
         </div>
       </div>
 
@@ -91,7 +65,7 @@ let userName = "Paris Washington";
       <div class="block">
         <div class="title-1">Посты</div>
         <div class="block-posts">
-          <PostMini v-for="post in posts" :is-light="false" :post="post" :user-name="userName" />
+          <PostMini v-for="post in postList" :is-light="false" :post="post" />
         </div>
       </div>
 
@@ -120,7 +94,7 @@ let userName = "Paris Washington";
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    gap: 30px;
+    gap: 15px;
   }
 
   .block-posts {

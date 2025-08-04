@@ -9,6 +9,8 @@ import { AuthService }  from "@/services/auth.servive";
 import type { UserInfoService } from "@/services/user-info.service";
 import type { SaveUserInfoDtoType, UserInfoType } from "@/types/user-info.type";
 import router from "@/router";
+import PopupPost from "@/components/popups/PopupPost.vue";
+import PopupDeleteApprove from "@/components/popups/PopupDeleteApprove.vue";
 
 
 const userService = inject('UserInfoService') as UserInfoService;
@@ -58,6 +60,8 @@ function openPageAvtor(id: number): void {
 
 <template>
   <div class="container">
+    <!-- <PopupPost title="Добавить пост" /> -->
+    <!-- <PopupDeleteApprove title="Удалить пост" /> -->
 
     <section class="main-view">
       

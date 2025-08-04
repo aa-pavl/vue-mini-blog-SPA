@@ -59,6 +59,11 @@ body {
   font-size: 18px;
 }
 
+.btn.second {
+  color: var(--color-green-dark);
+  background-color: white;
+  border: 1px solid var(--color-green-dark);
+}
 
 .line-h {
   width: auto;
@@ -72,3 +77,25 @@ body {
   background-color: var(--color-border);
 }
 
+.popup {
+  max-width: 650px;
+  height: 600px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.btn-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}

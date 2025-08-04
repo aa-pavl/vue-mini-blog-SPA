@@ -1,75 +1,70 @@
 <script setup lang="ts">
+import AvtorMini from '@/components/AvtorMini.vue'
+import PostMini from '@/components/PostMini.vue'
+import type { PostWithAvtorType } from '@/types/post.type'
 
-import AvtorMini from "@/components/AvtorMini.vue";
-import PostMini from "@/components/PostMini.vue"
-import type { PostType, PostWithAvtorType } from '@/types/post.type';
+import { inject, onMounted, ref } from 'vue'
+import { AuthService } from '@/services/auth.servive'
+import type { UserInfoService } from '@/services/user-info.service'
+import type { UserInfoType } from '@/types/user-info.type'
+import PopupAvtor from '@/components/popups/PopupAvtor.vue'
 
-import { inject, onMounted, ref } from "vue";
-import { AuthService }  from "@/services/auth.servive";
-import type { UserInfoService } from "@/services/user-info.service";
-import type { SaveUserInfoDtoType, UserInfoType } from "@/types/user-info.type";
-import router from "@/router";
-import PopupPost from "@/components/popups/PopupPost.vue";
-import PopupDeleteApprove from "@/components/popups/PopupDeleteApprove.vue";
+const flagPopupAvtor = ref<boolean>(false) // флаги для открытия popups
 
+const userService = inject('UserInfoService') as UserInfoService
+const avtorList = ref<UserInfoType[]>([])
+const postList = ref<PostWithAvtorType[]>([])
 
-const userService = inject('UserInfoService') as UserInfoService;
-const dataList = ref<UserInfoType[]>([]);
-const postList = ref<PostWithAvtorType[]>([]);
+const authService = inject('AuthService') as AuthService
 
+// Первоначальная загрузка
 onMounted(async () => {
-  const authService = inject('AuthService') as AuthService;
-  authService.login(authService.defaultUsername, authService.defaultPassword);
+  try {
+    // 1. Авторизация
+    await authService.login(authService.defaultUsername, authService.defaultPassword)
+    await userService.requestData()
 
-  await getDataList();
-  getPostList();
-});
+    // 2. Загрузка данных
+    await updateHandler()
+  } catch (error) {
+    console.error('Ошибка при инициализации:', error)
+    alert('Не удалось загрузить данные')
+  }
+})
 
+// Обновление данных после изменения
+async function updateHandler(): Promise<void> {
+  // Получение всех данных (список авторов и их посты)
+  avtorList.value = userService.getAvtorList()
 
-async function getDataList(): Promise<void> {
-  await userService.requestData();
-  dataList.value = userService.getData();
-}
-
-function getPostList(): void {
-  const res = dataList.value.flatMap(avtor => 
-    avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
-  );
-  if (res) {
-    postList.value = res;
-    console.log('Посты:', postList.value);
+  // Получаем весь список постов + автор
+  const resPosts: PostWithAvtorType[] | undefined = userService.getPostListAll()
+  if (resPosts) {
+    postList.value = resPosts
+    console.log('Посты:', postList.value)
   }
 }
 
-async function addAvtor(): Promise<void> {
-  const params: SaveUserInfoDtoType = {
-    "fullName":"Test Add1", 
-    "blogName": "Test blog1"
-  };
-
-  if (await userService.add(params)) {
-    await getDataList();
-  }
+function avtorPopup() {
+  flagPopupAvtor.value = true
 }
-
-function openPageAvtor(id: number): void {
-    router.push(`/avtor/${id}`)
+function closePopupHandler() {
+  flagPopupAvtor.value = false
 }
-
 </script>
 
 <template>
-  <div class="container">
-    <!-- <PopupPost title="Добавить пост" /> -->
-    <!-- <PopupDeleteApprove title="Удалить пост" /> -->
+  <div class="popup-bg" v-if="flagPopupAvtor">
+    <PopupAvtor @on-close="closePopupHandler" @on-update-data="updateHandler" />
+  </div>
 
+  <div class="container">
     <section class="main-view">
-      
       <div class="block">
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
-          <div class="btn btn-add" @click="addAvtor">Добавить автора</div>
-            <AvtorMini v-for="avtor in dataList" :user-name="avtor.fullName" @click="openPageAvtor(avtor.id)"/>
+          <div class="btn btn-add" @click="avtorPopup">Добавить автора</div>
+          <AvtorMini v-for="avtor in avtorList" :avtor="avtor" />
         </div>
       </div>
 
@@ -81,14 +76,11 @@ function openPageAvtor(id: number): void {
           <PostMini v-for="post in postList" :is-light="false" :post="post" />
         </div>
       </div>
-
     </section>
-
   </div>
 </template>
 
 <style scoped>
-
 .main-view {
   display: flex;
   gap: 30px;
@@ -115,6 +107,5 @@ function openPageAvtor(id: number): void {
     flex-wrap: wrap;
     gap: 30px;
   }
-
 }
 </style>

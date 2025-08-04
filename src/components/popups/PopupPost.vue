@@ -1,34 +1,37 @@
 <script setup lang="ts">
+import type { PopupPostType } from '@/types/popup.type';
 import IconClose from '../icons/IconClose.vue';
+import LabelAndInput from '../items/LabelAndInput.vue';
 
 
 const props = defineProps(['title']);
+const emit = defineEmits(['onClose']);
+
+const fields: PopupPostType[] = [
+  { "label": "Заголовок", "maxLenght": 50 },  
+  { "label": "Краткое описание", "maxLenght": 100  }, 
+  { "label": "Полное описание", "maxLenght": 255  }
+]
+
+function closePopup() {
+  // передаем родителю закрыть форму
+  emit('onClose');
+}
 
 </script>
 
 <template>
 
   <div class="popup popup-post">
-    <div class="btn-close"><IconClose /></div>
+    <div class="btn-close" @click="closePopup()"><IconClose /></div>
 
     <div class="title-2">Добавить пост</div>
     <div class="popup-content">
-      <div class="popup-input">
-        <div class="input-lable">Заголовок ( 0 / 50)</div>
-        <input type="text" class="input-text" placeholder="Введите текст...">
-      </div>
-      <div class="popup-input">
-        <div class="input-lable">Заголовок ( 0 / 50)</div>
-        <input type="text" class="input-text" placeholder="Введите текст...">
-      </div>
-      <div class="popup-input">
-        <div class="input-lable">Заголовок ( 0 / 50)</div>
-        <input type="text" class="input-text" placeholder="Введите текст...">
-      </div>
+      <LabelAndInput v-for="field in fields" :field="field" />
     </div>
     <div class="popup-btn-action">
       <div class="btn">Опубликовать</div>
-      <div class="btn second">Отменить</div>
+      <div class="btn second" @click="closePopup()">Отменить</div>
     </div>
   </div>
 
@@ -48,36 +51,12 @@ const props = defineProps(['title']);
     width: 100%;
     flex-grow: 1;
 
-    .popup-input {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    &:deep(> *:last-child) {
+      flex-grow: 1;
 
-      .input-lable {
-        color: var(--color-text-light);
-      }
-
-      .input-text {
-        border: 1px solid var(--color-text-light);
-        border-radius: 5px;
-        min-height: 50px;
-        height: 50px;
-        padding: 10px;
-
-        &::placeholder {
-          font-size: 14px;
-        }
-      }
-
-      &:last-child {
+      .input {
         flex-grow: 1;
-
-        .input-text {
-          flex-grow: 1;
-        }
       }
-
-
     }
   }
 

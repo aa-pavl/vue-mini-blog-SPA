@@ -1,71 +1,88 @@
 <script setup lang="ts">
-import IconEdit from '@/components/icons/IconEdit.vue';
-import PostMini from '@/components/PostMini.vue';
-import type { UserInfoService } from '@/services/user-info.service';
-import type { PostType, PostWithAvtorType } from '@/types/post.type';
-import type { UserInfoType } from '@/types/user-info.type';
-import { inject, onMounted, ref, watch } from 'vue';
+import PopupDeleteApprove from '@/components/popups/PopupDeleteApprove.vue'
+import PopupPost from '@/components/popups/PopupPost.vue'
+import PostMini from '@/components/PostMini.vue'
+import type { UserInfoService } from '@/services/user-info.service'
+import type { PostWithAvtorType } from '@/types/post.type'
+import type { UserInfoType } from '@/types/user-info.type'
+import { inject, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
-  id: string; 
-}>();
+  id: string
+}>()
 
-const avtor = ref<UserInfoType>();             // данные по автору
-const dataList = ref<UserInfoType[]>([]);      // все данные
-const postList = ref<PostWithAvtorType[]>([]); // список статей автора 
-const userService = inject('UserInfoService') as UserInfoService;
+const flagPopupPost = ref<boolean>(false) // флаги для открытия popups
+const flagPopupDelete = ref<boolean>(false)
+
+const avtor = ref<UserInfoType>() // данные по автору
+const postList = ref<PostWithAvtorType[]>([]) // список статей автора
+const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
-onMounted(loadData);
+onMounted(updateData)
 
 // Следим за изменением `id`
-watch(() => props.id, () => loadData());
+watch(
+  () => props.id,
+  () => updateData(),
+)
 
-async function loadData() {
-  await getDataList();
-
-  // находим нужного автора по id
-  const resAvtor: UserInfoType | undefined = dataList.value.find(item => item.id === Number(props.id));
+async function updateData() {
+  // Находим нужного автора по id
+  const resAvtor: UserInfoType | undefined = userService.getAvtorById(Number(props.id))
   if (resAvtor) {
-    avtor.value = resAvtor;
-    
-    // получаем список статей автора
-    const resPosts =  avtor.value?.post.map(post => ({...post, avtor: { fullName: avtor.value!.fullName, id: avtor.value!.id }}));
+    avtor.value = resAvtor
+
+    // Получаем список постов по id автора
+    const resPosts: PostWithAvtorType[] | undefined = userService.getPostListByAvter(resAvtor)
     if (resPosts) {
-      postList.value = resPosts;
-      console.log('Посты:', postList.value);
+      postList.value = resPosts
+      console.log('Посты:', postList.value)
     }
   } else {
-    console.log(`Автор с ID ${props.id} не найден`);
+    console.log(`Автор с ID ${props.id} не найден`)
   }
 }
 
-async function getDataList(): Promise<void> {
-  await userService.requestData();
-  dataList.value = userService.getData();
+function postPopup() {
+  flagPopupPost.value = true
 }
-
+function deletePopup() {
+  flagPopupDelete.value = true
+}
+function closePopupHandler() {
+  flagPopupPost.value = false
+  flagPopupDelete.value = false
+}
 </script>
 
 <template>
+  <div class="popup-bg" v-if="flagPopupPost || flagPopupDelete">
+    <PopupPost v-if="flagPopupPost" title="Добавить пост" @on-close="closePopupHandler()" />
+    <PopupDeleteApprove
+      v-if="flagPopupDelete"
+      title="автора"
+      :id="avtor?.id as number"
+      @on-close="closePopupHandler()"
+    />
+  </div>
+
   <div class="container">
-
     <section class="avtor-view">
-
       <div class="avtor-header">
-          <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image">
+        <img src="@/assets/images/user_1.png" alt="avtor-photo" class="avtor-image" />
 
-          <div class="avtor-info">
-              <div class="title-1 avtor-full-name">{{ avtor?.fullName }}</div>
-              <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
+        <div class="avtor-info">
+          <div class="title-1 avtor-full-name">{{ avtor?.fullName }}</div>
+          <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
 
-              <div class="avtor-action">
-                <div class="btn-edit"><IconEdit /></div>
-                <div class="btn btn-add">Добавить запись</div>
-              </div>
+          <div class="avtor-action">
+            <div class="btn second" @click="deletePopup()">Удалить автора</div>
+            <div class="btn" @click="postPopup()">Добавить запись</div>
           </div>
+        </div>
       </div>
-      
+
       <div class="avtor-posts">
         <div class="post-header">
           <div class="title-2">Статей автора: {{ avtor?.post.length }}</div>
@@ -73,21 +90,23 @@ async function getDataList(): Promise<void> {
         </div>
 
         <div class="posts">
-          <PostMini v-for="post in postList" :is-light="true" :post="post" :user-name="avtor?.fullName" />
+          <PostMini
+            v-for="post in postList"
+            :is-light="true"
+            :post="post"
+            :user-name="avtor?.fullName"
+          />
         </div>
       </div>
-
     </section>
-  
   </div>
 </template>
 
 <style>
-@import "@/assets/styles/base.css";
-@import "@/assets/styles/_fonts.css";
+@import '@/assets/styles/base.css';
+@import '@/assets/styles/_fonts.css';
 
 .avtor-view {
-
   .avtor-header {
     display: flex;
     gap: 40px;
@@ -112,9 +131,8 @@ async function getDataList(): Promise<void> {
         display: flex;
         align-items: center;
         justify-content: end;
-        gap: 30px;
+        gap: 15px;
       }
-
     }
   }
 
@@ -133,7 +151,6 @@ async function getDataList(): Promise<void> {
     }
   }
 }
-
 
 @media (min-width: 1024px) {
   .avtor {

@@ -1,14 +1,25 @@
 <script setup lang="ts">
+import router from '@/router';
+import type { UserInfoType } from '@/types/user-info.type';
 
-const props = defineProps(['userName']);
+
+// const props = defineProps(['avtor']);
+const props = defineProps<{
+  avtor: UserInfoType; 
+}>();
+
+
+function openPageAvtor(id: number): void {
+  router.push(`/avtor/${id}`)
+}
 
 </script>
 
 <template>
 
-  <div class="avtor-mini">
+  <div class="avtor-mini" @click="openPageAvtor(avtor.id)">
     <img src="@/assets/images/user_1.png" alt="user-photo" class="avtor-image">
-    <div class="avtor-user-name">{{ props.userName }}</div>
+    <div class="avtor-user-name">{{ props.avtor.fullName }}</div>
   </div>
 
 </template>

@@ -1,37 +1,39 @@
 <script setup lang="ts">
-import router from '@/router';
-import IconClose from '../icons/IconClose.vue';
-import { UserInfoService } from '@/services/user-info.service';
-import { inject } from 'vue';
+import router from '@/router'
+import IconClose from '../icons/IconClose.vue'
+import { UserInfoService } from '@/services/user-info.service'
+import { inject } from 'vue'
+import type { PostService } from '@/services/post.servive'
 
+const props = defineProps(['id', 'title'])
+const emit = defineEmits(['onClose'])
 
-const props = defineProps(['id', "title"]);
-const emit = defineEmits(['onClose']);
-
-const userService = inject('UserInfoService') as UserInfoService;
+const userService = inject('UserInfoService') as UserInfoService
+const postService = inject('PostService') as PostService
 
 async function doDelete() {
-  console.log(props.id);
   if (props.id) {
-    await userService.delete(props.id);
-    closePopup();
-    router.push(`/`);
+    if (props.title === 'автора') {
+      await userService.delete(props.id)
+    }
+    if (props.title === 'пост') {
+      await postService.delete(props.id)
+    }
+    closePopup()
+    router.push(`/`)
   } else {
-    alert("Возникла ошибка при удаление автора! Обратитесь в поддержку.")
-    closePopup();
+    alert('Возникла ошибка при удаление автора! Обратитесь в поддержку.')
+    closePopup()
   }
 }
 
 function closePopup() {
   // передаем родителю закрыть форму
-  emit('onClose');
+  emit('onClose')
 }
-
-
 </script>
 
 <template>
-
   <div class="popup popup-approve">
     <div class="btn-close" @click="closePopup()"><IconClose /></div>
 
@@ -42,13 +44,11 @@ function closePopup() {
       <div class="btn second" @click="closePopup()">Отменить</div>
     </div>
   </div>
-
 </template>
 
-
 <style scoped>
-@import "@/assets/styles/base.css";
-@import "@/assets/styles/_fonts.css";
+@import '@/assets/styles/base.css';
+@import '@/assets/styles/_fonts.css';
 
 .popup-approve {
   height: auto;

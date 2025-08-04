@@ -26,8 +26,8 @@ export class UserInfoService {
     return response.data
   }
 
-  private async deleteUserInfo(id: number): Promise<void> {
-    const response = await this.http.delete<void>('/api/userInfo/' + id)
+  private async deleteUserInfo(userId: number): Promise<void> {
+    const response = await this.http.delete<void>('/api/userInfo/' + userId)
     return response.data
   }
 
@@ -51,7 +51,6 @@ export class UserInfoService {
         }),
       )
       console.log('Автор добавлен:', data.value)
-      await this.requestData()
       return true
     } catch (error) {
       console.error('Не удалось добавить автора:', error)
@@ -59,11 +58,10 @@ export class UserInfoService {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(userId: number): Promise<boolean> {
     try {
-      await this.deleteUserInfo(id)
+      await this.deleteUserInfo(userId)
       console.log('Автор удален')
-      await this.requestData()
       return true
     } catch (error) {
       console.error('Не удалось удалить автора:', error)

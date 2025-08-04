@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
+import PopupDeleteApprove from '@/components/popups/PopupDeleteApprove.vue'
+import PopupPost from '@/components/popups/PopupPost.vue'
 import PostFooter from '@/components/PostFooter.vue'
 import PostMini from '@/components/PostMini.vue'
 import type { UserInfoService } from '@/services/user-info.service'
@@ -10,6 +12,9 @@ import { inject, onMounted, ref, watch } from 'vue'
 const props = defineProps<{
   id: string
 }>()
+
+const flagPopupPost = ref<boolean>(false) // флаги для открытия popups
+const flagPopupDelete = ref<boolean>(false)
 
 const postTarget = ref<PostWithAvtorType>()
 const postList = ref<PostWithAvtorType[]>([])
@@ -41,18 +46,45 @@ async function updateHandler() {
     console.log(`Пост с ID ${id} не найден`)
   }
 }
+
+function postPopup() {
+  flagPopupPost.value = true
+}
+function deletePopup() {
+  flagPopupDelete.value = true
+}
+function closePopupHandler() {
+  flagPopupPost.value = false
+  flagPopupDelete.value = false
+}
 </script>
 
 <template>
+  <div class="popup-bg" v-if="flagPopupPost || flagPopupDelete">
+    <PopupPost
+      v-if="flagPopupPost"
+      title="Добавить пост"
+      :user-id="postTarget?.avtor?.id"
+      @on-close="closePopupHandler"
+      @on-update-data="updateHandler"
+    />
+    <PopupDeleteApprove
+      v-if="flagPopupDelete"
+      title="пост"
+      :id="postTarget?.id"
+      @on-close="closePopupHandler"
+    />
+  </div>
+
   <div class="container">
     <section class="post-view">
       <div class="title-1">{{ postTarget?.title }}</div>
       <div class="post-view-brief">{{ postTarget?.briefDescription }}</div>
 
       <div class="post-view-action">
-        <div class="btn-edit"><IconEdit /></div>
-        <div class="btn-delete"><IconTrash /></div>
-        <div class="btn btn-add">Добавить запись</div>
+        <div class="btn-edit" @click="postPopup"><IconEdit /></div>
+        <div class="btn-delete" @click="deletePopup"><IconTrash /></div>
+        <div class="btn btn-add" @click="postPopup">Добавить пост</div>
       </div>
 
       <div class="post-view-description">{{ postTarget?.fullDescription }}</div>

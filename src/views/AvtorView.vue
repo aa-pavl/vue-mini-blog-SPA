@@ -19,19 +19,19 @@ const postList = ref<PostWithAvtorType[]>([]) // список статей ав�
 const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
-onMounted(updateData)
+onMounted(updateHandler)
 
 // Следим за изменением `id`
 watch(
   () => props.id,
-  () => updateData(),
+  () => updateHandler(),
 )
 
-async function updateData() {
+async function updateHandler() {
   // Находим нужного автора по id
   const resAvtor: UserInfoType | undefined = userService.getAvtorById(Number(props.id))
   if (resAvtor) {
-    avtor.value = resAvtor
+    avtor.value = resAvtor as UserInfoType
 
     // Получаем список постов по id автора
     const resPosts: PostWithAvtorType[] | undefined = userService.getPostListByAvter(resAvtor)
@@ -58,12 +58,18 @@ function closePopupHandler() {
 
 <template>
   <div class="popup-bg" v-if="flagPopupPost || flagPopupDelete">
-    <PopupPost v-if="flagPopupPost" title="Добавить пост" @on-close="closePopupHandler()" />
+    <PopupPost
+      v-if="flagPopupPost"
+      title="Добавить пост"
+      :user-id="avtor?.id"
+      @on-close="closePopupHandler"
+      @on-update-data="updateHandler"
+    />
     <PopupDeleteApprove
       v-if="flagPopupDelete"
       title="автора"
-      :id="avtor?.id as number"
-      @on-close="closePopupHandler()"
+      :user-id="avtor?.id"
+      @on-close="closePopupHandler"
     />
   </div>
 
@@ -77,8 +83,8 @@ function closePopupHandler() {
           <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
 
           <div class="avtor-action">
-            <div class="btn second" @click="deletePopup()">Удалить автора</div>
-            <div class="btn" @click="postPopup()">Добавить запись</div>
+            <div class="btn second" @click="deletePopup">Удалить автора</div>
+            <div class="btn" @click="postPopup">Добавить пост</div>
           </div>
         </div>
       </div>

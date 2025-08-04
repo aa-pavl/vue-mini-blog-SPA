@@ -6,7 +6,7 @@ import PostMini from '@/components/PostMini.vue';
 import type { UserInfoService } from '@/services/user-info.service';
 import type {  PostWithAvtorType } from '@/types/post.type';
 import type { UserInfoType } from '@/types/user-info.type';
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, onUpdated, ref, watch } from 'vue';
 
 const props = defineProps<{
   id: string; 
@@ -17,7 +17,14 @@ const dataList = ref<UserInfoType[]>([]);
 const postList = ref<PostWithAvtorType[]>([]);
 const userService = inject('UserInfoService') as UserInfoService;
 
-onMounted(async () => { 
+
+// Первоначальная загрузка
+onMounted(loadData);
+
+// Следим за изменением `id`
+watch(() => props.id, () => loadData());
+
+async function loadData() {
   await getDataList();
   getPostList();
     
@@ -28,7 +35,7 @@ onMounted(async () => {
   } else {
     console.log(`Пост с ID ${id} не найден`);
   }
-});
+}
 
 async function getDataList(): Promise<void> {
   await userService.requestData();

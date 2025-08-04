@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import CommentCount from "@/components/CommentCount.vue"
+import router from "@/router";
 import type { PostWithAvtorType } from "@/types/post.type";
 
 const props = defineProps<{
@@ -8,13 +9,17 @@ const props = defineProps<{
   post: PostWithAvtorType
 }>();
 
+function openPageAvtor(id: number): void {
+    router.push(`/avtor/${id}`)
+}
+
 </script>
 
 <template>
     <div class="post-footer">
 
       <div class="post-info-left">
-        <img src="@/assets/images/user_1.png" alt="user-photo" v-if="!props.isLight" class="post-info-image">
+        <img src="@/assets/images/user_1.png" alt="user-photo" v-if="!props.isLight" class="post-info-image" @click="openPageAvtor(props.post.avtor.id)">
         <div class="post-info-content">
           <div class="post-info-user-name" v-if="!props.isLight">{{ props.post.avtor.fullName }}</div>
           <div class="post-info-date-time">{{ props.post.dateTime }}</div>
@@ -45,6 +50,7 @@ const props = defineProps<{
     .post-info-image {
       width: 50px;
       height: 50px;
+      cursor: pointer;
     }
 
     .post-info-content {

@@ -4,46 +4,45 @@ import PostMini from '@/components/PostMini.vue';
 import type { UserInfoService } from '@/services/user-info.service';
 import type { PostType, PostWithAvtorType } from '@/types/post.type';
 import type { UserInfoType } from '@/types/user-info.type';
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   id: string; 
 }>();
 
-const avtor = ref<UserInfoType>();
-const dataList = ref<UserInfoType[]>([]);
-const postList = ref<PostWithAvtorType[]>([]);
+const avtor = ref<UserInfoType>();             // данные по автору
+const dataList = ref<UserInfoType[]>([]);      // все данные
+const postList = ref<PostWithAvtorType[]>([]); // список статей автора 
 const userService = inject('UserInfoService') as UserInfoService;
 
-onMounted(async () => {
+// Первоначальная загрузка
+onMounted(loadData);
+
+// Следим за изменением `id`
+watch(() => props.id, () => loadData());
+
+async function loadData() {
   await getDataList();
 
-  const res: UserInfoType | undefined = dataList.value.find(item => item.id === Number(props.id));
-  if (res) {
-    avtor.value = res;
-    getPostList();
+  // находим нужного автора по id
+  const resAvtor: UserInfoType | undefined = dataList.value.find(item => item.id === Number(props.id));
+  if (resAvtor) {
+    avtor.value = resAvtor;
+    
+    // получаем список статей автора
+    const resPosts =  avtor.value?.post.map(post => ({...post, avtor: { fullName: avtor.value!.fullName, id: avtor.value!.id }}));
+    if (resPosts) {
+      postList.value = resPosts;
+      console.log('Посты:', postList.value);
+    }
   } else {
     console.log(`Автор с ID ${props.id} не найден`);
   }
-});
+}
 
 async function getDataList(): Promise<void> {
   await userService.requestData();
   dataList.value = userService.getData();
-}
-
-function getPostList(): void {
-  // const res =  dataList.value.aflatMap(avtor => 
-  //   avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
-  // );
-  const res =  dataList.value.find(item => item.id == avtor.id);
-  map(avtor => 
-    avtor.post.map(post => ({...post, avtor: { fullName: avtor.fullName, id: avtor.id }}))
-  );
-  if (res) {
-    postList.value = res;
-    console.log('Посты:', postList.value);
-  }
 }
 
 </script>
@@ -74,7 +73,7 @@ function getPostList(): void {
         </div>
 
         <div class="posts">
-          <PostMini v-for="post in avtor?.post" :is-light="true" :post="post" :user-name="avtor?.fullName" />
+          <PostMini v-for="post in postList" :is-light="true" :post="post" :user-name="avtor?.fullName" />
         </div>
       </div>
 

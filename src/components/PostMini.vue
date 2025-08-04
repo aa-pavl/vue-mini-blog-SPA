@@ -16,10 +16,11 @@ function openPagePost(id: number): void {
 </script>
 
 <template>
-  <div class="post-mini" @click="openPagePost(props.post.id)">
-
-    <div class="post-title">{{ props.post.title }}</div>
-    <div class="post-descriprion">{{ props.post.briefDescription }}</div>
+  <div class="post-mini">
+    <div class="post-mini-main" @click="openPagePost(props.post.id)">
+      <div class="post-title">{{ props.post.title }}</div>
+      <div class="post-descriprion">{{ props.post.briefDescription }}</div>
+    </div>
     
     <PostFooter :is-light="props.isLight" :post="props.post" />
 
@@ -35,8 +36,6 @@ function openPagePost(id: number): void {
   width: 393px;
   height: 300px;
 
-  cursor: pointer;
-
   padding: 15px;
   box-sizing: border-box;
   border: 1px solid var(--color-border);
@@ -46,14 +45,23 @@ function openPagePost(id: number): void {
   flex-direction: column;
   gap: 10px;
 
-  .post-title {
-    font-size: 24px;
-    font-weight: 700;
+  .post-mini-main {
+    flex-grow: 1;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .post-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .post-descriprion {
+      color: var(--tetx-border);
+      flex-grow: 1;
+    }
   }
 
-  .post-descriprion {
-    color: var(--tetx-border);
-    flex-grow: 1;
-  }
 }
 </style>

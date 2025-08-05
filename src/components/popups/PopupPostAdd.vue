@@ -8,8 +8,8 @@ import type { PostService } from '@/services/post.servive'
 import type { UserInfoService } from '@/services/user-info.service'
 
 const props = defineProps<{
-  userId: number,
-  title: string,
+  userId: number
+  title: string
 }>()
 const emit = defineEmits(['onClose', 'onUpdate'])
 
@@ -18,7 +18,6 @@ const fields: PopupInputType[] = [
   { label: 'Краткое описание', maxLength: 100, name: 'briefDescription' },
   { label: 'Полное описание', maxLength: 255, name: 'fullDescription' },
 ]
-
 
 const popupEnum = PopupEnum
 const postService = inject('PostService') as PostService
@@ -74,31 +73,4 @@ function closePopup() {
   </div>
 </template>
 
-<style scoped>
-@import '@/assets/styles/base.css';
-@import '@/assets/styles/_fonts.css';
-
-.popup-post {
-  .popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    flex-grow: 1;
-
-    &:deep(> *:last-child) {
-      flex-grow: 1;
-
-      .input {
-        flex-grow: 1;
-      }
-    }
-  }
-
-  .popup-btn-action {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-  }
-}
-</style>
+<style scoped></style>

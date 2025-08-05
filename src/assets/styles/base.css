@@ -1,23 +1,17 @@
 :root {
-  --color-background: white;
+  --color-border: #d9d9d9;
 
-  --color-border: #D9D9D9;
-  /* --color-border-hover: var(--vt-c-divider-light-1); */
+  --color-text-dark: #121416;
+  --color-text-light: #6c757d;
 
-  /* --color-heading: var(--vt-c-text-light-1); */
-  --color-text-dark: #121416; 
-  --color-text-light: #6C757D; 
-
-  --color-green-dark: #456F49;
-  --color-green-light: #E7F1E8;
-
-  --section-gap: 40px;
+  --color-green-dark: #456f49;
+  --color-green-light: #e7f1e8;
 }
 
 body {
   padding: 0;
   margin: 0;
-  
+
   min-height: 100vh;
 
   background: var(--color-background);
@@ -36,6 +30,7 @@ body {
 @media (max-width: 1280px) {
   .container {
     padding: 20px;
+    margin: 10px auto;
   }
 }
 
@@ -53,17 +48,24 @@ body {
   font-weight: 500;
 }
 
-
+@media (max-width: 900px) {
+  .title-1 {
+    font-size: 30px;
+  }
+  .title-2 {
+    font-size: 20px;
+  }
+}
 
 .btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   background-color: var(--color-green-dark);
   border-radius: 5px;
   padding: 0 15px;
-  min-width: 250px;
+  width: 250px;
   height: 50px;
 
   color: white;
@@ -89,7 +91,7 @@ body {
   background-color: var(--color-border);
 }
 
-
+/* Описание стилей для Popup */
 .popup-bg {
   position: fixed;
   background-color: rgba(0, 0, 0, 0.25);
@@ -103,7 +105,8 @@ body {
 
 .popup {
   max-width: 650px;
-  height: 600px;
+  width: 90%;
+  height: auto;
 
   display: flex;
   flex-direction: column;
@@ -114,10 +117,30 @@ body {
   background-color: white;
   border-radius: 5px;
   border: 1px solid var(--color-border);
-  margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
   position: relative;
+}
+
+.popup .title-2 {
+  text-align: center;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: auto;
+}
+
+.popup-btn-action {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+}
+.popup-btn-action .btn {
+  width: 100%;
 }
 
 .btn-close {
@@ -125,4 +148,16 @@ body {
   top: 20px;
   right: 20px;
   cursor: pointer;
+}
+
+@media (max-width: 400px) {
+  /* .popup-btn-action {
+    flex-direction: column;
+  } */
+  .popup-btn-action {
+    flex-direction: column;
+  }
+  .popup-btn-action .btn {
+    width: auto;
+  }
 }

@@ -2,14 +2,14 @@
 import { type PopupInputType, type PopupUpdateType } from '@/types/popup'
 import IconClose from '../icons/IconClose.vue'
 import LabelAndInput from '../items/LabelAndInput.vue'
-import type { SavePostDtoType } from '@/types/post.type'
+import type { PostWithAvtorType, SavePostDtoType } from '@/types/post.type'
 import { inject, ref } from 'vue'
 import type { PostService } from '@/services/post.servive'
 import type { UserInfoService } from '@/services/user-info.service'
 
 const props = defineProps<{
-  postId: number,
-  title: string,
+  postId: number
+  title: string
 }>()
 const emit = defineEmits(['onClose', 'onUpdate'])
 
@@ -19,14 +19,25 @@ const fields: PopupInputType[] = [
   { label: 'Полное описание', maxLength: 255, name: 'fullDescription' },
 ]
 
-
 const postService = inject('PostService') as PostService
 const userService = inject('UserInfoService') as UserInfoService
+
+// Забираем данные о текущем посте
+const storedData = localStorage.getItem('post_' + props.postId)
+let json: PostWithAvtorType | {} = {}
+try {
+  json = storedData ? (JSON.parse(storedData) as PostWithAvtorType) : {}
+} catch (e) {
+  console.error('Error parsing post data:', e)
+  json = {}
+}
 const formData = ref<SavePostDtoType>({
-  title: '',
-  briefDescription: '',
-  fullDescription: '',
+  title: 'title' in json ? json.title : '',
+  briefDescription: 'briefDescription' in json ? json.briefDescription : '',
+  fullDescription: 'fullDescription' in json ? json.fullDescription : '',
 })
+
+console.log('post_' + props.postId, storedData, formData.value)
 
 function handleFieldUpdate({ fieldName, value }: PopupUpdateType): void {
   formData.value[fieldName as keyof SavePostDtoType] = value
@@ -43,7 +54,7 @@ async function doAction(): Promise<void> {
     return
   }
   try {
-    await postService.update({...formData.value, id: props.postId})
+    await postService.update({ ...formData.value, id: props.postId })
     await userService.requestData()
     emit('onUpdate')
     closePopup()
@@ -64,7 +75,12 @@ function closePopup() {
 
     <div class="title-2">{{ props.title }}</div>
     <div class="popup-content">
-      <LabelAndInput v-for="field in fields" :field="field" @update="handleFieldUpdate" />
+      <LabelAndInput
+        v-for="field in fields"
+        :field="field"
+        :data="formData[field.name]"
+        @update="handleFieldUpdate"
+      />
     </div>
     <div class="popup-btn-action">
       <div class="btn" @click="doAction">Сохранить</div>
@@ -73,31 +89,4 @@ function closePopup() {
   </div>
 </template>
 
-<style scoped>
-@import '@/assets/styles/base.css';
-@import '@/assets/styles/_fonts.css';
-
-.popup-post {
-  .popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    flex-grow: 1;
-
-    &:deep(> *:last-child) {
-      flex-grow: 1;
-
-      .input {
-        flex-grow: 1;
-      }
-    }
-  }
-
-  .popup-btn-action {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-  }
-}
-</style>
+<style scoped></style>

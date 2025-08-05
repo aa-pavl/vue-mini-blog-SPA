@@ -12,15 +12,15 @@ import router from '@/router'
 import type { UserInfoService } from '@/services/user-info.service'
 import { PopupEnum } from '@/types/popup'
 import type { PostWithAvtorType } from '@/types/post.type'
-import { inject, onMounted, ref, watch } from 'vue'
+import { inject, onBeforeMount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   id: string
 }>()
 
 const popupEnum = PopupEnum
-const flagPopup = ref<boolean>(false) 
-const titlePopup = ref<string>("")
+const flagPopup = ref<boolean>(false)
+const titlePopup = ref<string>('')
 const idAvtorPopup = ref<number>(0)
 const idPostPopup = ref<number>(0)
 const idCommentPopup = ref<number>(0)
@@ -30,7 +30,22 @@ const postList = ref<PostWithAvtorType[]>([])
 const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
-onMounted(updateHandler)
+onBeforeMount(() => {
+  // Пробуем загрузить из кэша
+  const cachedList = localStorage.getItem('postList')
+  if (cachedList) {
+    postList.value = JSON.parse(cachedList)
+  }
+
+  const id = Number(props.id)
+  const cachedPost = localStorage.getItem(`post_${id}`)
+  if (cachedPost) {
+    postTarget.value = JSON.parse(cachedPost)
+  }
+
+  // Все равно делаем запрос на актуальные данные
+  updateHandler()
+})
 
 // Следим за изменением `id`
 watch(
@@ -43,6 +58,7 @@ async function updateHandler() {
   const resPosts: PostWithAvtorType[] | undefined = userService.getPostListAll()
   if (resPosts) {
     postList.value = resPosts
+    localStorage.setItem('postList', JSON.stringify(resPosts)) // Сохраняем
     console.log('Посты:', postList.value)
   }
 
@@ -51,32 +67,47 @@ async function updateHandler() {
   const res = userService.getPostListById(id)
   if (res) {
     postTarget.value = res
+    localStorage.setItem(`post_${id}`, JSON.stringify(res)) // Сохраняем конкретный пост
   } else {
     console.log(`Пост с ID ${id} не найден`)
+
+    localStorage.removeItem('postList')
+    localStorage.removeItem(`post_${Number(props.id)}`)
   }
 }
 
 function onMain() {
-  router.push("/")
+  // Очищаем кэш при переходе на главную
+  localStorage.removeItem('postList')
+  localStorage.removeItem(`post_${Number(props.id)}`)
+  router.push('/')
 }
 
-function popupAction(status: boolean, title: string = "", idAvtor: number = 0, idPost: number = 0, idComment: number = 0) {
+function popupAction(
+  status: boolean,
+  title: string = '',
+  idAvtor: number = 0,
+  idPost: number = 0,
+  idComment: number = 0,
+) {
   flagPopup.value = status
   titlePopup.value = title
   idAvtorPopup.value = idAvtor
   idPostPopup.value = idPost
   idCommentPopup.value = idComment
 }
-
 </script>
 
 <template>
-  <PopupMain v-if="flagPopup"
-    :title="titlePopup" 
+  <PopupMain
+    v-if="flagPopup"
+    :title="titlePopup"
     :user-id="idAvtorPopup"
-    :post-id="idPostPopup" 
-    :comment-id="idCommentPopup" 
-    @on-main="onMain" @on-update="updateHandler" @on-close="popupAction(false)"
+    :post-id="idPostPopup"
+    :comment-id="idCommentPopup"
+    @on-main="onMain"
+    @on-update="updateHandler"
+    @on-close="popupAction(false)"
   />
 
   <div class="container">
@@ -85,9 +116,18 @@ function popupAction(status: boolean, title: string = "", idAvtor: number = 0, i
       <div class="post-view-brief">{{ postTarget?.briefDescription }}</div>
 
       <div class="post-view-action">
-        <div class="btn-edit" @click="popupAction(true, popupEnum.PostUpdate, 0, postTarget?.id)"><IconEdit /></div>
-        <div class="btn-delete" @click="popupAction(true, popupEnum.PostDelete, 0, postTarget!.id)"><IconTrash /></div>
-        <div class="btn btn-add" @click="popupAction(true, popupEnum.PostAdd, postTarget!.avtor.id)">Добавить пост</div>
+        <div class="btn-edit" @click="popupAction(true, popupEnum.PostUpdate, 0, postTarget?.id)">
+          <IconEdit />
+        </div>
+        <div class="btn-delete" @click="popupAction(true, popupEnum.PostDelete, 0, postTarget!.id)">
+          <IconTrash />
+        </div>
+        <div
+          class="btn btn-add"
+          @click="popupAction(true, popupEnum.PostAdd, postTarget!.avtor.id)"
+        >
+          Добавить пост
+        </div>
       </div>
 
       <div class="post-view-description">{{ postTarget?.fullDescription }}</div>
@@ -98,23 +138,30 @@ function popupAction(status: boolean, title: string = "", idAvtor: number = 0, i
     <div class="line-h"></div>
 
     <section class="post-comments">
-      <div class="btn" @click="popupAction(true, popupEnum.CommentAdd, 0, postTarget?.id)">Добавить комментарий</div>
+      <div class="btn" @click="popupAction(true, popupEnum.CommentAdd, 0, postTarget?.id)">
+        Добавить комментарий
+      </div>
 
-        <div class="comment-block" v-for="comment in postTarget?.comments">
-          <div class="comment-top">
-            <div class="comment-info">
-              <div class="title-3">{{ comment.userInfo }}</div>
-              <div class="email">{{ comment.email }}</div>
-            </div>
-            <div class="comment-datetime">{{ comment.dateTime }}</div>
+      <div class="comment-block" v-for="comment in postTarget?.comments">
+        <div class="comment-top">
+          <div class="comment-info">
+            <div class="title-3">{{ comment.userInfo }}</div>
+            <div class="email">{{ comment.email }}</div>
           </div>
+          <div class="comment-datetime">{{ comment.dateTime }}</div>
+        </div>
 
-          <div class="comment-text">{{ comment.textComment }}</div>
+        <div class="comment-text">{{ comment.textComment }}</div>
 
-          <div class="comment-action">
-              <div class="btn-delete" @click="popupAction(true, popupEnum.CommentDelete, 0, 0, comment?.id)"><IconTrash /></div>
+        <div class="comment-action">
+          <div
+            class="btn-delete"
+            @click="popupAction(true, popupEnum.CommentDelete, 0, 0, comment?.id)"
+          >
+            <IconTrash />
           </div>
         </div>
+      </div>
     </section>
 
     <div class="line-h"></div>
@@ -215,11 +262,9 @@ function popupAction(status: boolean, title: string = "", idAvtor: number = 0, i
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    max-width: 650px;
     width: 100%;
     gap: 15px;
 
-    
     .comment-block {
       display: flex;
       flex-direction: column;
@@ -244,7 +289,6 @@ function popupAction(status: boolean, title: string = "", idAvtor: number = 0, i
         justify-content: end;
         gap: 15px;
       }
-
     }
   }
 

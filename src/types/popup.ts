@@ -1,23 +1,24 @@
+import type { SavePostDtoType } from './post.type'
+
 export type PopupInputType = {
-  name: string;
-  label: string; 
-  maxLength: number;
+  name: keyof SavePostDtoType
+  label: string
+  maxLength: number
 }
 
 export type PopupUpdateType = {
-  fieldName: string;
-  value: string;
-};
-
+  fieldName: string
+  value: string
+}
 
 export enum PopupEnum {
-  AvtorAdd    = "Добавить автора",
-  AvtorDelete = "Удалить автора",
-  
-  PostAdd    = "Добавить пост",
-  PostDelete = "Удалить пост",
-  PostUpdate = "Обновить пост",
+  AvtorAdd = 'Добавить автора',
+  AvtorDelete = 'Удалить автора',
 
-  CommentAdd = "Добавить комментарий",
-  CommentDelete = "Удалить комментарий",
-};
+  PostAdd = 'Добавить пост',
+  PostDelete = 'Удалить пост',
+  PostUpdate = 'Обновить пост',
+
+  CommentAdd = 'Добавить комментарий',
+  CommentDelete = 'Удалить комментарий',
+}

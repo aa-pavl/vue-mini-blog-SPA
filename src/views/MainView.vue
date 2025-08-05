@@ -3,7 +3,7 @@ import AvtorMini from '@/components/AvtorMini.vue'
 import PostMini from '@/components/PostMini.vue'
 import type { PostWithAvtorType } from '@/types/post.type'
 
-import { inject, onMounted, ref } from 'vue'
+import { inject, onBeforeMount, onMounted, ref } from 'vue'
 import { AuthService } from '@/services/auth.servive'
 import type { UserInfoService } from '@/services/user-info.service'
 import type { UserInfoType } from '@/types/user-info.type'
@@ -11,7 +11,7 @@ import PopupMain from '@/components/popups/PopupMain.vue'
 import { PopupEnum } from '@/types/popup'
 import router from '@/router'
 
-const flagPopup = ref<boolean>(false) 
+const flagPopup = ref<boolean>(false)
 
 const userService = inject('UserInfoService') as UserInfoService
 const avtorList = ref<UserInfoType[]>([])
@@ -20,7 +20,7 @@ const postList = ref<PostWithAvtorType[]>([])
 const authService = inject('AuthService') as AuthService
 
 // Первоначальная загрузка
-onMounted(async () => {
+onBeforeMount(async () => {
   try {
     // 1. Авторизация
     await authService.login(authService.defaultUsername, authService.defaultPassword)
@@ -48,24 +48,28 @@ async function updateHandler(): Promise<void> {
 }
 
 function onMain() {
-  router.push("/")
+  router.push('/')
 }
 
 function popupAction(status: boolean) {
   flagPopup.value = status
 }
-
 </script>
 
 <template>
-  <PopupMain v-if="flagPopup"
-    :title="PopupEnum.AvtorAdd" :post-id="0" :user-id="0" :comment-id="0" 
-    @on-main="onMain" @on-update="updateHandler" @on-close="popupAction(false)"
+  <PopupMain
+    v-if="flagPopup"
+    :title="PopupEnum.AvtorAdd"
+    :post-id="0"
+    :user-id="0"
+    :comment-id="0"
+    @on-main="onMain"
+    @on-update="updateHandler"
+    @on-close="popupAction(false)"
   />
 
   <div class="container">
     <section class="main-view">
-
       <div class="block">
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
@@ -126,12 +130,11 @@ function popupAction(status: boolean) {
 
     .title-1 {
       text-align: center;
-    }   
+    }
 
     .block-line {
       display: none;
     }
   }
 }
-
 </style>

@@ -14,8 +14,8 @@ const props = defineProps<{
   id: string
 }>()
 
-const flagPopup = ref<boolean>(false) 
-const titlePopup = ref<string>("")
+const flagPopup = ref<boolean>(false)
+const titlePopup = ref<string>('')
 const idAvtorPopup = ref<number>(0)
 
 const avtor = ref<UserInfoType>() // данные по автору
@@ -25,7 +25,21 @@ const popupEnum = PopupEnum
 const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
-onMounted(updateHandler)
+onMounted(() => {
+  // Пробуем загрузить из кэша
+  const cachedAvtor = localStorage.getItem(`avtor_${props.id}`)
+  if (cachedAvtor) {
+    avtor.value = JSON.parse(cachedAvtor)
+  }
+
+  const cachedPosts = localStorage.getItem(`posts_avtor_${props.id}`)
+  if (cachedPosts) {
+    postList.value = JSON.parse(cachedPosts)
+  }
+
+  // Все равно делаем запрос на актуальные данные
+  updateHandler()
+})
 
 // Следим за изменением `id`
 watch(
@@ -38,38 +52,47 @@ async function updateHandler() {
   const resAvtor: UserInfoType | undefined = userService.getAvtorById(Number(props.id))
   if (resAvtor) {
     avtor.value = resAvtor as UserInfoType
+    localStorage.setItem(`avtor_${props.id}`, JSON.stringify(resAvtor)) // Сохраняем автора
 
     // Получаем список постов по id автора
     const resPosts: PostWithAvtorType[] | undefined = userService.getPostListByAvter(resAvtor)
     if (resPosts) {
       postList.value = resPosts
+      localStorage.setItem(`posts_avtor_${props.id}`, JSON.stringify(resPosts)) // Сохраняем посты
       console.log('Посты:', postList.value)
     }
   } else {
     console.log(`Автор с ID ${props.id} не найден`)
+    // Очищаем кэш если автор не найден
+    localStorage.removeItem(`avtor_${props.id}`)
+    localStorage.removeItem(`posts_avtor_${props.id}`)
   }
 }
 
-
 function onMain() {
-  router.push("/")
+  // Очищаем кэш при переходе на главную
+  localStorage.removeItem(`avtor_${props.id}`)
+  localStorage.removeItem(`posts_avtor_${props.id}`)
+  router.push('/')
 }
 
-function popupAction(status: boolean, title: string = "", id: number = 0) {
+function popupAction(status: boolean, title: string = '', id: number = 0) {
   flagPopup.value = status
   titlePopup.value = title
   idAvtorPopup.value = id
 }
-
 </script>
 
 <template>
-  <PopupMain v-if="flagPopup"
-    :title="titlePopup" 
+  <PopupMain
+    v-if="flagPopup"
+    :title="titlePopup"
     :user-id="idAvtorPopup"
-    :post-id="0" 
-    :comment-id="0" 
-    @on-main="onMain" @on-update="updateHandler" @on-close="popupAction(false)"
+    :post-id="0"
+    :comment-id="0"
+    @on-main="onMain"
+    @on-update="updateHandler"
+    @on-close="popupAction(false)"
   />
 
   <div class="container">
@@ -82,8 +105,12 @@ function popupAction(status: boolean, title: string = "", id: number = 0) {
           <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
 
           <div class="avtor-action">
-            <div class="btn second" @click="popupAction(true, popupEnum.AvtorDelete, avtor!.id)">Удалить автора</div>
-            <div class="btn" @click="popupAction(true, popupEnum.PostAdd, avtor!.id)">Добавить пост</div>
+            <div class="btn second" @click="popupAction(true, popupEnum.AvtorDelete, avtor!.id)">
+              Удалить автора
+            </div>
+            <div class="btn" @click="popupAction(true, popupEnum.PostAdd, avtor!.id)">
+              Добавить пост
+            </div>
           </div>
         </div>
       </div>
@@ -148,7 +175,7 @@ function popupAction(status: boolean, title: string = "", id: number = 0) {
 }
 
 @media (min-width: 840px) {
-  .avtor-header  {
+  .avtor-header {
     flex-direction: column;
   }
 }

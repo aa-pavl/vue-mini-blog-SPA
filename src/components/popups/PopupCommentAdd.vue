@@ -8,8 +8,7 @@ import type { UserInfoService } from '@/services/user-info.service'
 import type { SaveCommentDtoType } from '@/types/comment.type'
 import type { CommentService } from '@/services/comment.servive'
 
-
-const props = defineProps(['postId', "title"])
+const props = defineProps(['postId', 'title'])
 const emit = defineEmits(['onClose', 'onUpdate'])
 
 const fields: PopupInputType[] = [
@@ -68,31 +67,4 @@ function closePopup(): void {
   </div>
 </template>
 
-<style scoped>
-@import '@/assets/styles/base.css';
-@import '@/assets/styles/_fonts.css';
-
-.popup-post {
-  .popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    flex-grow: 1;
-
-    &:deep(> *:last-child) {
-      flex-grow: 1;
-
-      .input {
-        flex-grow: 1;
-      }
-    }
-  }
-
-  .popup-btn-action {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-  }
-}
-</style>
+<style scoped></style>

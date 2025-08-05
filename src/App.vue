@@ -1,33 +1,27 @@
 <script setup lang="ts">
-
-import IconLogo from './components/icons/IconLogo.vue';
-import IconExit from './components/icons/IconExit.vue';
-import AuthView from './views/AuthView.vue';
-
+import IconLogo from './components/icons/IconLogo.vue'
+import IconExit from './components/icons/IconExit.vue'
+import AuthView from './views/AuthView.vue'
 </script>
 
 <template>
-
   <!-- <template> -->
-    <header class="header">
-      <div class="container">
-        <router-link to="/"><IconLogo /></router-link>
-        <router-link to="/auth"><IconExit /></router-link>
-      </div>
-    </header>
+  <header class="header">
+    <div class="container">
+      <router-link to="/"><IconLogo /></router-link>
+      <router-link to="/auth"><IconExit /></router-link>
+    </div>
+  </header>
 
-    <RouterView />
+  <RouterView />
   <!-- </template> -->
 
   <!-- <AuthView /> -->
-
-
-
 </template>
 
 <style scoped>
-@import "@/assets/styles/base.css";
-@import "@/assets/styles/_fonts.css";
+@import '@/assets/styles/base.css';
+@import '@/assets/styles/_fonts.css';
 
 .header {
   background-color: var(--color-green-dark);
@@ -41,4 +35,9 @@ import AuthView from './views/AuthView.vue';
   }
 }
 
+@media (max-width: 1280px) {
+  .header .container {
+    padding: 20px;
+  }
+}
 </style>

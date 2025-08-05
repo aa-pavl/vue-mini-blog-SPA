@@ -17,6 +17,7 @@ function openPagePost(id: number): void {
 
 <template>
   <div class="post-mini">
+    
     <div class="post-mini-main" @click="openPagePost(props.post.id)">
       <div class="post-title">{{ props.post.title }}</div>
       <div class="post-descriprion">{{ props.post.briefDescription }}</div>

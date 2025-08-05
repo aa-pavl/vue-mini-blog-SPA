@@ -7,9 +7,11 @@ import { inject, onMounted, ref } from 'vue'
 import { AuthService } from '@/services/auth.servive'
 import type { UserInfoService } from '@/services/user-info.service'
 import type { UserInfoType } from '@/types/user-info.type'
-import PopupAvtor from '@/components/popups/PopupAvtor.vue'
+import PopupMain from '@/components/popups/PopupMain.vue'
+import { PopupEnum } from '@/types/popup'
+import router from '@/router'
 
-const flagPopupAvtor = ref<boolean>(false) // флаги для открытия popups
+const flagPopup = ref<boolean>(false) 
 
 const userService = inject('UserInfoService') as UserInfoService
 const avtorList = ref<UserInfoType[]>([])
@@ -45,25 +47,28 @@ async function updateHandler(): Promise<void> {
   }
 }
 
-function avtorPopup() {
-  flagPopupAvtor.value = true
+function onMain() {
+  router.push("/")
 }
-function closePopupHandler() {
-  flagPopupAvtor.value = false
+
+function popupAction(status: boolean) {
+  flagPopup.value = status
 }
+
 </script>
 
 <template>
-  <div class="popup-bg" v-if="flagPopupAvtor">
-    <PopupAvtor @on-close="closePopupHandler" @on-update-data="updateHandler" />
-  </div>
+  <PopupMain v-if="flagPopup"
+    :title="PopupEnum.AvtorAdd" :post-id="0" :user-id="0" :comment-id="0" 
+    @on-main="onMain" @on-update="updateHandler" @on-close="popupAction(false)"
+  />
 
   <div class="container">
     <section class="main-view">
       <div class="block">
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
-          <div class="btn btn-add" @click="avtorPopup">Добавить автора</div>
+          <div class="btn btn-add" @click="popupAction(true)">Добавить автора</div>
           <AvtorMini v-for="avtor in avtorList" :avtor="avtor" />
         </div>
       </div>

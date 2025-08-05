@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import PopupDeleteApprove from '@/components/popups/PopupDeleteApprove.vue'
-import PopupPost from '@/components/popups/PopupPost.vue'
+import PopupDelete from '@/components/popups/PopupDelete.vue'
+import PopupMain from '@/components/popups/PopupMain.vue'
+import PopupPost from '@/components/popups/PopupPostUpdate.vue'
 import PostMini from '@/components/PostMini.vue'
+import router from '@/router'
 import type { UserInfoService } from '@/services/user-info.service'
+import { PopupEnum } from '@/types/popup'
 import type { PostWithAvtorType } from '@/types/post.type'
 import type { UserInfoType } from '@/types/user-info.type'
 import { inject, onMounted, ref, watch } from 'vue'
@@ -11,11 +14,16 @@ const props = defineProps<{
   id: string
 }>()
 
-const flagPopupPost = ref<boolean>(false) // флаги для открытия popups
-const flagPopupDelete = ref<boolean>(false)
+const flagPopup = ref<boolean>(false) 
+const titlePopup = ref<string>("")
+const idAvtorPopup = ref<number>(0)
+// const flagPopupPost = ref<boolean>(false) // флаги для открытия popups
+// const flagPopupDelete = ref<boolean>(false)
 
 const avtor = ref<UserInfoType>() // данные по автору
 const postList = ref<PostWithAvtorType[]>([]) // список статей автора
+
+const popupEnum = PopupEnum
 const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
@@ -44,34 +52,27 @@ async function updateHandler() {
   }
 }
 
-function postPopup() {
-  flagPopupPost.value = true
+
+function onMain() {
+  router.push("/")
 }
-function deletePopup() {
-  flagPopupDelete.value = true
+
+function popupAction(status: boolean, title: string = "", id: number = 0) {
+  flagPopup.value = status
+  titlePopup.value = title
+  idAvtorPopup.value = id
 }
-function closePopupHandler() {
-  flagPopupPost.value = false
-  flagPopupDelete.value = false
-}
+
 </script>
 
 <template>
-  <div class="popup-bg" v-if="flagPopupPost || flagPopupDelete">
-    <PopupPost
-      v-if="flagPopupPost"
-      title="Добавить пост"
-      :user-id="avtor?.id"
-      @on-close="closePopupHandler"
-      @on-update-data="updateHandler"
-    />
-    <PopupDeleteApprove
-      v-if="flagPopupDelete"
-      title="автора"
-      :user-id="avtor?.id"
-      @on-close="closePopupHandler"
-    />
-  </div>
+  <PopupMain v-if="flagPopup"
+    :title="titlePopup" 
+    :user-id="idAvtorPopup"
+    :post-id="0" 
+    :comment-id="0" 
+    @on-main="onMain" @on-update="updateHandler" @on-close="popupAction(false)"
+  />
 
   <div class="container">
     <section class="avtor-view">
@@ -83,8 +84,8 @@ function closePopupHandler() {
           <div class="title-2 avtor-blog-name">{{ avtor?.blogName }}</div>
 
           <div class="avtor-action">
-            <div class="btn second" @click="deletePopup">Удалить автора</div>
-            <div class="btn" @click="postPopup">Добавить пост</div>
+            <div class="btn second" @click="popupAction(true, popupEnum.AvtorDelete, avtor!.id)">Удалить автора</div>
+            <div class="btn" @click="popupAction(true, popupEnum.PostAdd, avtor!.id)">Добавить пост</div>
           </div>
         </div>
       </div>

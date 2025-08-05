@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PopupInputType, PopupUpdateType } from '@/types/popup.type';
+import type { PopupInputType, PopupUpdateType } from '@/types/popup';
 import { ref, watch } from 'vue';
 
 

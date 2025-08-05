@@ -25,7 +25,7 @@ export class PostService {
   }
 
   private async updatePost(params: UpdatePostDtoType): Promise<PostType> {
-    const response = await this.http.post<PostType>('/api/post/', params)
+    const response = await this.http.put<PostType>('/api/post', params)
     return response.data
   }
 

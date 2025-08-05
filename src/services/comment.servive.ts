@@ -19,8 +19,8 @@ export class CommentService {
     return response.data
   }
 
-  private async deleteComment(id: number): Promise<void> {
-    const response = await this.http.delete<void>('/api/comment/' + id)
+  private async deleteComment(commentId: number): Promise<void> {
+    const response = await this.http.delete<void>('/api/comment/' + commentId)
     return response.data
   }
 
@@ -41,9 +41,9 @@ export class CommentService {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(commentId: number): Promise<boolean> {
     try {
-      await this.deleteComment(id)
+      await this.deleteComment(commentId)
       console.log('Комментарий удален')
       return true
     } catch (error) {

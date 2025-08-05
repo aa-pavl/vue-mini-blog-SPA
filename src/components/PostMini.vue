@@ -34,7 +34,7 @@ function openPagePost(id: number): void {
 @import "@/assets/styles/_fonts.css";
 
 .post-mini {
-  width: 393px;
+  width: 350px;
   height: 300px;
 
   padding: 15px;
@@ -63,6 +63,13 @@ function openPagePost(id: number): void {
       flex-grow: 1;
     }
   }
+}
 
+@media (max-width: 768px) {
+  .post-mini {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
 }
 </style>

@@ -18,22 +18,26 @@ export class AuthService {
     });
   }
 
-  private async auth(username: string, password: string): Promise<AuthType> {
-    const response = await this.http.post<AuthType>(`/auth/login?username=${username}&password=${password}`);
-    return response.data;
-  }
+  // private async auth(username: string, password: string): Promise<AuthType> {
+  //   const response = await this.http.post<AuthType>(`/auth/login?username=${username}&password=${password}`);
+  //   return response.data;
+  // }
 
 
-  async login(username: string, password: string): Promise<void> {
+  async auth(username: string, password: string): Promise<void> {
     console.log("Запрос на авторизацию...");
     try {
-      const loginData = this.auth(username, password);
+      const loginData = await this.http.post<AuthType>(`/auth/login?username=${username}&password=${password}`);
       console.log('Вы успешно вошли!', loginData);
       this.isLogged = true;
     } catch (error) {
       console.error('Не удалось войти:', error);
       this.isLogged = false;
     }
+  }
+
+  login(username: string, password: string): void {
+    this.auth(username, password);
   }
 
   logout(): void {

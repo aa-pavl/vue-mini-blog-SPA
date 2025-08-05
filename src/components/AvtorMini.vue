@@ -30,7 +30,8 @@ function openPageAvtor(id: number): void {
 @import "@/assets/styles/_fonts.css";
 
 .avtor-mini {
-  width: 343px;
+  width: 100%;
+  /* width: 343px; */
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid var(--color-border);
@@ -54,4 +55,5 @@ function openPageAvtor(id: number): void {
   }
 
 }
+
 </style>

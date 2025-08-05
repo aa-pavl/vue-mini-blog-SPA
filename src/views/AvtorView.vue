@@ -17,8 +17,6 @@ const props = defineProps<{
 const flagPopup = ref<boolean>(false) 
 const titlePopup = ref<string>("")
 const idAvtorPopup = ref<number>(0)
-// const flagPopupPost = ref<boolean>(false) // флаги для открытия popups
-// const flagPopupDelete = ref<boolean>(false)
 
 const avtor = ref<UserInfoType>() // данные по автору
 const postList = ref<PostWithAvtorType[]>([]) // список статей автора
@@ -90,20 +88,15 @@ function popupAction(status: boolean, title: string = "", id: number = 0) {
         </div>
       </div>
 
-      <div class="avtor-posts">
-        <div class="post-header">
-          <div class="title-2">Статей автора: {{ avtor?.post.length }}</div>
-          <div class="btn-sort">Сортировать</div>
-        </div>
+      <div class="title-2">Статей автора: {{ avtor?.post.length }}</div>
 
-        <div class="posts">
-          <PostMini
-            v-for="post in postList"
-            :is-light="true"
-            :post="post"
-            :user-name="avtor?.fullName"
-          />
-        </div>
+      <div class="posts">
+        <PostMini
+          v-for="post in postList"
+          :is-light="true"
+          :post="post"
+          :user-name="avtor?.fullName"
+        />
       </div>
     </section>
   </div>
@@ -114,6 +107,10 @@ function popupAction(status: boolean, title: string = "", id: number = 0) {
 @import '@/assets/styles/_fonts.css';
 
 .avtor-view {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
   .avtor-header {
     display: flex;
     gap: 40px;
@@ -143,27 +140,16 @@ function popupAction(status: boolean, title: string = "", id: number = 0) {
     }
   }
 
-  .avtor-posts {
-    .post-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 40px;
-    }
-
-    .posts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-    }
+  .posts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
   }
 }
 
-@media (min-width: 1024px) {
-  .avtor {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+@media (min-width: 840px) {
+  .avtor-header  {
+    flex-direction: column;
   }
 }
 </style>

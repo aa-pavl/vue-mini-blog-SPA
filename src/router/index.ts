@@ -10,6 +10,11 @@ const router = createRouter({
       component: MainView,
     },
     {
+      path: '/auth',
+      name: 'post',
+      component: () => import('../views/AuthView.vue'),
+    },
+    {
       path: '/avtor/:id',
       name: 'avtor',
       component: () => import('../views/AvtorView.vue'),

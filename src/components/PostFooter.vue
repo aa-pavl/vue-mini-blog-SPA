@@ -64,4 +64,10 @@ function openPageAvtor(id: number): void {
 
   }
 }
+
+@media (max-width: 360px) {
+  .post-info-image {
+    display: none;
+  }
+}
 </style>

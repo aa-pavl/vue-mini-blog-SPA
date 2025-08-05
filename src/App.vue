@@ -2,19 +2,26 @@
 
 import IconLogo from './components/icons/IconLogo.vue';
 import IconExit from './components/icons/IconExit.vue';
+import AuthView from './views/AuthView.vue';
 
 </script>
 
 <template>
 
-  <header class="header">
-    <div class="container">
-      <router-link to="/"><IconLogo /></router-link>
-      <router-link to="/auth"><IconExit /></router-link>
-    </div>
-  </header>
+  <!-- <template> -->
+    <header class="header">
+      <div class="container">
+        <router-link to="/"><IconLogo /></router-link>
+        <router-link to="/auth"><IconExit /></router-link>
+      </div>
+    </header>
 
-  <RouterView />
+    <RouterView />
+  <!-- </template> -->
+
+  <!-- <AuthView /> -->
+
+
 
 </template>
 
@@ -33,4 +40,5 @@ import IconExit from './components/icons/IconExit.vue';
     margin: 0 auto;
   }
 }
+
 </style>

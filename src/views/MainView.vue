@@ -65,6 +65,7 @@ function popupAction(status: boolean) {
 
   <div class="container">
     <section class="main-view">
+
       <div class="block">
         <div class="title-1">Авторы</div>
         <div class="block-avtors">
@@ -90,6 +91,10 @@ function popupAction(status: boolean) {
   display: flex;
   gap: 30px;
 
+  .block {
+    margin: 0 auto;
+  }
+
   .block-line {
     width: 2px;
     height: auto;
@@ -109,8 +114,24 @@ function popupAction(status: boolean) {
 
   .block-posts {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 30px;
   }
 }
+
+@media (max-width: 900px) {
+  .main-view {
+    flex-direction: column;
+
+    .title-1 {
+      text-align: center;
+    }   
+
+    .block-line {
+      display: none;
+    }
+  }
+}
+
 </style>

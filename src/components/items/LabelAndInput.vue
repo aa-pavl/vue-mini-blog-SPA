@@ -14,19 +14,21 @@ const inputValue = ref<string>(props.data || '') // Реактивная пер�
 
 // Обработчик потери фокуса
 const handleBlur = () => {
+  if (props.field.name === 'email' && !validateEmail(inputValue.value)) {
+    alert('Почта введена неверно')
+    return // Не отправляем данные, если email невалидный
+  }
   emit('update', {
     fieldName: props.field.name,
     value: inputValue.value,
   })
 }
 
-// // Отслеживаем изменения и отправляем родителю
-// watch(inputValue, (newValue) => {
-//   emit('update', {
-//     fieldName: props.field.name,
-//     value: newValue
-//   });
-// });
+// Проверка валидности email
+const validateEmail = (email: string): boolean => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(email)
+}
 </script>
 
 <template>

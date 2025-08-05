@@ -2,8 +2,7 @@
 import AvtorMini from '@/components/AvtorMini.vue'
 import PostMini from '@/components/PostMini.vue'
 import type { PostWithAvtorType } from '@/types/post.type'
-
-import { inject, onBeforeMount, onMounted, ref } from 'vue'
+import { inject, onBeforeMount, ref } from 'vue'
 import { AuthService } from '@/services/auth.servive'
 import type { UserInfoService } from '@/services/user-info.service'
 import type { UserInfoType } from '@/types/user-info.type'

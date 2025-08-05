@@ -1,7 +1,9 @@
+import type { SaveCommentDtoType } from './comment.type'
 import type { SavePostDtoType } from './post.type'
+import type { SaveUserInfoDtoType } from './user-info.type'
 
 export type PopupInputType = {
-  name: keyof SavePostDtoType
+  name: keyof SavePostDtoType | keyof SaveCommentDtoType | keyof SaveUserInfoDtoType
   label: string
   maxLength: number
 }

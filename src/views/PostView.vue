@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import CommentBlock from '@/components/CommentBlock.vue'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
-import PopupCommentAdd from '@/components/popups/PopupCommentAdd.vue'
-import PopupDelete from '@/components/popups/PopupDelete.vue'
 import PopupMain from '@/components/popups/PopupMain.vue'
-import PopupPost from '@/components/popups/PopupPostUpdate.vue'
-import PostFooter from '@/components/PostFooter.vue'
+import PostFooter from '@/components/items/PostFooter.vue'
 import PostMini from '@/components/PostMini.vue'
 import router from '@/router'
 import type { UserInfoService } from '@/services/user-info.service'
 import { PopupEnum } from '@/types/popup'
 import type { PostWithAvtorType } from '@/types/post.type'
-import { inject, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { inject, onBeforeMount, ref, watch } from 'vue'
 
 const props = defineProps<{
   id: string

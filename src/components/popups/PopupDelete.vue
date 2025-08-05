@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import router from '@/router'
 import IconClose from '../icons/IconClose.vue'
 import { UserInfoService } from '@/services/user-info.service'
 import { inject } from 'vue'
@@ -18,33 +17,34 @@ const commentService = inject('CommentService') as CommentService
 async function doDelete() {
   console.log(props.title, props.id)
   if (!props.id) {
-    alert('Ошибка: ID не указан');
-    return;
+    alert('Ошибка: ID не указан')
+    return
   }
   try {
     switch (props.title) {
       case popupEnum.AvtorDelete:
         await userService.delete(props.id)
-        break;
+        break
 
       case popupEnum.PostDelete:
         await postService.delete(props.id)
-        break;
+        break
 
       case popupEnum.CommentDelete:
         await commentService.delete(props.id)
-        break;
+        break
 
       default:
-        break;
+        break
     }
+    await userService.requestData()
     emit('onUpdate')
     if (props.title !== popupEnum.CommentDelete) {
-        emit('onMain') 
+      emit('onMain')
     }
     closePopup()
-}  catch (error) {
-    console.error('Ошибка при удалении:', error);
+  } catch (error) {
+    console.error('Ошибка при удалении:', error)
     alert('Возникла ошибка при удаление! Обратитесь в поддержку.')
     closePopup()
   }
@@ -59,7 +59,7 @@ function closePopup() {
   <div class="popup popup-approve">
     <div class="btn-close" @click="closePopup"><IconClose /></div>
 
-    <div class="title-2"> {{ props.title }}?</div>
+    <div class="title-2">{{ props.title }}?</div>
 
     <div class="popup-btn-action">
       <div class="btn" @click="doDelete">Удалить</div>

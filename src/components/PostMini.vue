@@ -1,37 +1,32 @@
 <script setup lang="ts">
-
-import router from "@/router";
-import PostFooter from "./PostFooter.vue";
-import type { PostWithAvtorType } from "@/types/post.type";
+import router from '@/router'
+import PostFooter from './items/PostFooter.vue'
+import type { PostWithAvtorType } from '@/types/post.type'
 
 const props = defineProps<{
-  isLight: boolean;
+  isLight: boolean
   post: PostWithAvtorType
-}>();
+}>()
 
 function openPagePost(id: number): void {
-    router.push(`/post/${id}`)
+  router.push(`/post/${id}`)
 }
-
 </script>
 
 <template>
   <div class="post-mini">
-    
     <div class="post-mini-main" @click="openPagePost(props.post.id)">
       <div class="post-title">{{ props.post.title }}</div>
       <div class="post-descriprion">{{ props.post.briefDescription }}</div>
     </div>
-    
-    <PostFooter :is-light="props.isLight" :post="props.post" />
 
+    <PostFooter :is-light="props.isLight" :post="props.post" />
   </div>
 </template>
 
-
 <style scoped>
-@import "@/assets/styles/base.css";
-@import "@/assets/styles/_fonts.css";
+@import '@/assets/styles/base.css';
+@import '@/assets/styles/_fonts.css';
 
 .post-mini {
   width: 350px;

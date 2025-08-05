@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import IconLogo from './components/icons/IconLogo.vue'
 import IconExit from './components/icons/IconExit.vue'
-import AuthView from './views/AuthView.vue'
 </script>
 
 <template>
-  <!-- <template> -->
   <header class="header">
     <div class="container">
       <router-link to="/"><IconLogo /></router-link>
-      <router-link to="/auth"><IconExit /></router-link>
     </div>
   </header>
 
   <RouterView />
-  <!-- </template> -->
-
-  <!-- <AuthView /> -->
 </template>
 
 <style scoped>
@@ -30,7 +24,7 @@ import AuthView from './views/AuthView.vue'
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     margin: 0 auto;
   }
 }

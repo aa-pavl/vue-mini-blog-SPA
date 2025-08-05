@@ -8,7 +8,7 @@ import type { UserInfoService } from '@/services/user-info.service'
 import { PopupEnum } from '@/types/popup'
 import type { PostWithAvtorType } from '@/types/post.type'
 import type { UserInfoType } from '@/types/user-info.type'
-import { inject, onMounted, ref, watch } from 'vue'
+import { inject, onBeforeMount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   id: string
@@ -25,7 +25,7 @@ const popupEnum = PopupEnum
 const userService = inject('UserInfoService') as UserInfoService
 
 // Первоначальная загрузка
-onMounted(() => {
+onBeforeMount(() => {
   // Пробуем загрузить из кэша
   const cachedAvtor = localStorage.getItem(`avtor_${props.id}`)
   if (cachedAvtor) {
@@ -174,9 +174,27 @@ function popupAction(status: boolean, title: string = '', id: number = 0) {
   }
 }
 
-@media (min-width: 840px) {
-  .avtor-header {
+@media (max-width: 840px) {
+  .avtor-view .avtor-header .avtor-info {
+    .avtor-action {
+      flex-direction: column;
+      align-items: end;
+      justify-content: end;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .avtor-view .avtor-header {
     flex-direction: column;
+    align-items: center;
+
+    .avtor-info {
+      .avtor-image {
+        width: 150px;
+        height: 150px;
+      }
+    }
   }
 }
 </style>
